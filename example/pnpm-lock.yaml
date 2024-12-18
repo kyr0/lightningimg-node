@@ -1,0 +1,22 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      lightningimg:
+        specifier: ^0.0.1
+        version: 0.0.1
+
+packages:
+
+  lightningimg@0.0.1:
+    resolution: {integrity: sha512-SyF8YMPRzoyQP8/cLS1kjL9XRFjl289VNePYeAgWYj/AxcUaWV9oz/ozwftmn+kHTMCTjav7kiGls3LvWw78/A==}
+
+snapshots:
+
+  lightningimg@0.0.1: {}

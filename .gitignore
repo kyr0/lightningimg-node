@@ -127,3 +127,10 @@ Cargo.lock
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# meta data
+.DS_Store
+
+# test data
+test_images
+test_output

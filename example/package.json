@@ -1,0 +1,15 @@
+{
+  "name": "lightningimg-example",
+  "type": "module",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "Aron Homberg <info@aron-homberg.de>",
+  "license": "MIT",
+  "description": "Example on how to use lightningimg as a developer",
+  "dependencies": {
+    "lightningimg-node": "^0.1.0"
+  }
+}

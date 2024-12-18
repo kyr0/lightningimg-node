@@ -1,11 +1,18 @@
 {
-  "name": "@napi-rs/package-template",
-  "version": "1.0.0",
-  "description": "Template project for writing node package with napi-rs",
+  "name": "lightningimg-node",
+  "version": "0.1.0",
+  "description": "A transparent and safe image converter for Node.js, written in Rust. Encodes PNG, JPG/JPEG, TIFF to WebP",
   "main": "index.js",
-  "repository": "git@github.com:napi-rs/package-template.git",
+  "repository": "https://github.com/kyr0/lightningimg-node",
+  "author": "Aron Homberg <info@aron-homberg.de>",
   "license": "MIT",
   "keywords": [
+    "png",
+    "tiff",
+    "jpg",
+    "jpeg",
+    "webp",
+    "convert",
     "napi-rs",
     "NAPI",
     "N-API",
@@ -18,7 +25,7 @@
     "index.js"
   ],
   "napi": {
-    "name": "package-template",
+    "name": "lightningimg-node",
     "triples": {
       "defaults": true,
       "additional": [
@@ -62,8 +69,11 @@
     "@swc-node/register": "^1.10.6",
     "@swc/core": "^1.6.13",
     "@taplo/cli": "^0.7.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.10.2",
     "ava": "^6.1.3",
     "chalk": "^5.3.0",
+    "fs-extra": "^11.2.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
     "npm-run-all2": "^7.0.0",

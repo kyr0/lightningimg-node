@@ -1,8 +1,8 @@
 import test from 'ava'
 
-import { plus100 } from '../index'
+import { processDirectoryDestructive, processDirectory } from '../index.js'
 
-test('sync function from native code', (t) => {
-  const fixture = 42
-  t.is(plus100(fixture), fixture + 100)
+test('API contrat filfilled', (t) => {
+  t.is(typeof processDirectoryDestructive, "function")
+  t.is(typeof processDirectory, "function")
 })

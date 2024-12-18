@@ -1,20 +1,17 @@
 {
-  "name": "@napi-rs/package-template-linux-x64-musl",
-  "version": "1.0.0",
+  "name": "lightningimg-node-linux-x64-musl",
+  "version": "0.0.1",
   "os": [
     "linux"
   ],
   "cpu": [
     "x64"
   ],
-  "libc": [
-    "musl"
-  ],
-  "main": "package-template.linux-x64-musl.node",
+  "main": "lightningimg-node.linux-x64-musl.node",
   "files": [
-    "package-template.linux-x64-musl.node"
+    "lightningimg-node.linux-x64-musl.node"
   ],
-  "description": "Template project for writing node package with napi-rs",
+  "description": "A transparent and safe image converter for Node.js, written in Rust. Encodes PNG, JPG, TIFF to WebP",
   "keywords": [
     "napi-rs",
     "NAPI",
@@ -31,5 +28,8 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "repository": "git@github.com:napi-rs/package-template.git"
+  "repository": "https://github.com/kyr0/lightningimg-node",
+  "libc": [
+    "musl"
+  ]
 }
