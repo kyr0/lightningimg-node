@@ -50,7 +50,7 @@ processDirectoryDestructive('./test_images', /* keep original file names */ true
 
 ### Building
 
-After `yarn build/npm run build` command, you can see `package-template.[darwin|win32|linux].node` file in project root. This is the native addon built from [lib.rs](./src/lib.rs).
+After `yarn build/npm run build` command, you can see `lightningimg-node.[darwin|win32|linux].node` file in project root. This is the native addon built from [lib.rs](./src/lib.rs).
 
 Debug builds:
 
