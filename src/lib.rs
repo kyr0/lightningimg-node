@@ -1,5 +1,3 @@
-#![deny(clippy::all)]
-
 use image::{DynamicImage, ImageReader};
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
@@ -83,7 +81,7 @@ fn process_directory_internal(
   keep_original_ext: bool,
 ) -> Result<()> {
   let input_path = Path::new(input_dir);
-  let output_path = output_dir.map(|p| Path::new(p));
+  let output_path = output_dir.map(Path::new);
 
   let entries: Vec<PathBuf> = fs::read_dir(input_path)
     .map_err(|e| Error::from_reason(e.to_string()))?
