@@ -8,40 +8,39 @@
 
 ## API
 
-It's super simple! Take a look at the [`./example`](./example/index.js) folder. 
+It's super simple! Take a look at the [`./example`](./example/index.js) folder.
 Please keep in mind to install `lightningimg-node` as a dependency in your project (see [`./example/package.json`](./example/package.json)).
 
 ```js
-import { processDirectoryDestructive, processDirectory } from "lightningimg-node"
+import { processDirectoryDestructive, processDirectory } from 'lightningimg-node'
 
 // Process all images in the test_images directory and save the output in the test_output directory
-processDirectory("./test_images", "./test_output")
+processDirectory('./test_images', './test_output')
 
 // Overwrite the original images with the processed images, keeping the original image's file extensions
 // (this is only useful when working with bundlers for static site generators like Gatsby, Next.js, Astro, etc.)
-processDirectoryDestructive("./test_images", /* keep original file names */ true)
+processDirectoryDestructive('./test_images', /* keep original file names */ true)
 ```
 
 ## Support matrix
 
 ### Operating Systems
 
- |                  | node14 | node16 | node18 | node20 |
- | ---------------- | ------ | ------ | ------ | ------ |
- | Windows x64      | ✓      | ✓      | ✓      | ✓      |
- | Windows x32      | ✓      | ✓      | ✓      | ✓      |
- | Windows arm64    | ✓      | ✓      | ✓      | ✓      |
- | macOS x64        | ✓      | ✓      | ✓      | ✓      |
- | macOS arm64      | ✓      | ✓      | ✓      | ✓      |
- | Linux x64 gnu    | ✓      | ✓      | ✓      | ✓      |
- | Linux x64 musl   | ✓      | ✓      | ✓      | ✓      |
- | Linux arm gnu    | ✓      | ✓      | ✓      | ✓      |
- | Linux arm64 gnu  | ✓      | ✓      | ✓      | ✓      |
- | Linux arm64 musl | ✓      | ✓      | ✓      | ✓      |
- | Android arm64    | ✓      | ✓      | ✓      | ✓      |
- | Android armv7    | ✓      | ✓      | ✓      | ✓      |
- | FreeBSD x64      | ✓      | ✓      | ✓      | ✓      |
-
+|                  | node14 | node16 | node18 | node20 |
+| ---------------- | ------ | ------ | ------ | ------ |
+| Windows x64      | ✓      | ✓      | ✓      | ✓      |
+| Windows x32      | ✓      | ✓      | ✓      | ✓      |
+| Windows arm64    | ✓      | ✓      | ✓      | ✓      |
+| macOS x64        | ✓      | ✓      | ✓      | ✓      |
+| macOS arm64      | ✓      | ✓      | ✓      | ✓      |
+| Linux x64 gnu    | ✓      | ✓      | ✓      | ✓      |
+| Linux x64 musl   | ✓      | ✓      | ✓      | ✓      |
+| Linux arm gnu    | ✓      | ✓      | ✓      | ✓      |
+| Linux arm64 gnu  | ✓      | ✓      | ✓      | ✓      |
+| Linux arm64 musl | ✓      | ✓      | ✓      | ✓      |
+| Android arm64    | ✓      | ✓      | ✓      | ✓      |
+| Android armv7    | ✓      | ✓      | ✓      | ✓      |
+| FreeBSD x64      | ✓      | ✓      | ✓      | ✓      |
 
 ## Contribute (for library developers)
 
@@ -54,9 +53,11 @@ processDirectoryDestructive("./test_images", /* keep original file names */ true
 After `yarn build/npm run build` command, you can see `package-template.[darwin|win32|linux].node` file in project root. This is the native addon built from [lib.rs](./src/lib.rs).
 
 Debug builds:
+
 - `yarn run build:debug`
 
 Release builds:
+
 - `yarn run build`
 
 ### Testing
@@ -64,9 +65,11 @@ Release builds:
 With [ava](https://github.com/avajs/ava), run `yarn test/npm run test` to testing native addon. You can also switch to another testing framework if you want.
 
 ### Benchmarking
+
 - `yarn run bench`
 
 ### Linting
+
 - `yarn run lint`
 
 ### CI
@@ -83,7 +86,7 @@ The other problem is how to deliver prebuild `binary` to users. Downloading it i
 
 In this package, we choose a better way to solve this problem. We release different `npm packages` for different platforms. And add it to `optionalDependencies` before releasing the `Major` package to npm.
 
-`NPM` will choose which native package should download from `registry` automatically. You can see [npm](./npm) dir for details. 
+`NPM` will choose which native package should download from `registry` automatically. You can see [npm](./npm) dir for details.
 
 ### Development requirements
 

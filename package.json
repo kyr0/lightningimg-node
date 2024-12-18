@@ -58,7 +58,7 @@
     "format:prettier": "prettier . -w",
     "format:toml": "taplo format",
     "format:rs": "cargo fmt",
-    "lint": "oxlint .",
+    "lint": "oxlint . && cargo fmt -- --check",
     "prepublishOnly": "napi prepublish -t npm",
     "test": "ava",
     "version": "napi version",
