@@ -94,7 +94,7 @@ fn process_directory_internal(
       if is_supported(entry) {
         convert_image(entry, output_path, keep_original_ext)?;
       } else {
-        println!("Skipping unsupported file: {}", entry.display());
+        //println!("Skipping unsupported file: {}", entry.display());
       }
     } else if entry.is_dir() {
       process_directory_internal(
