@@ -17,6 +17,7 @@ function copyFiles(src, dest) {
 
 // remove the test_output directory before processing
 rmSync('./test_output', { recursive: true, force: true })
+rmSync('./test_images', { recursive: true, force: true })
 
 // create the test_images directory only if it does not exist
 if (!existsSync('test_images')) {
@@ -41,3 +42,13 @@ console.time('Testing destructive processing...')
 // (this is only useful when working with bundlers for static site generators like Gatsby, Next.js, Astro, etc.)
 processDirectoryDestructive('./test_images', /* keep original file names */ true)
 console.timeEnd('Testing destructive processing...')
+
+// Copy all files from test_data to test_images
+copyFiles('./test_data', './test_images')
+
+// test that it works when the directory does not exist
+console.time('Testing destructive processing with non-existing folder...')
+// Overwrite the original images with the processed images, keeping the original image's file extensions
+// (this is only useful when working with bundlers for static site generators like Gatsby, Next.js, Astro, etc.)
+processDirectoryDestructive('./test_images_non_existing', /* keep original file names */ true)
+console.timeEnd('Testing destructive processing with non-existing folder...')

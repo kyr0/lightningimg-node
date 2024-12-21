@@ -1,6 +1,6 @@
 {
   "name": "lightningimg-node",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A transparent and safe image converter for Node.js, written in Rust. Encodes PNG, JPG/JPEG, TIFF to WebP",
   "main": "index.js",
   "repository": "https://github.com/kyr0/lightningimg-node",
@@ -62,7 +62,8 @@
     "prepublishOnly": "napi prepublish -t npm",
     "test": "ava",
     "version": "napi version",
-    "prepare": "husky"
+    "prepare": "husky",
+    "smoke-test": "node smoke.js"
   },
   "devDependencies": {
     "@napi-rs/cli": "^2.18.4",

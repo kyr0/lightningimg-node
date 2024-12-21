@@ -116,7 +116,7 @@ $ ava --verbose
 ### Release the package
 
 ```
-npm version [<newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease [--preid=<prerelease-id>] | from-git]
+yarn run version -p patch
 
 git push
 ```

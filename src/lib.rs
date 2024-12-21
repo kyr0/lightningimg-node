@@ -83,6 +83,11 @@ fn process_directory_internal(
   let input_path = Path::new(input_dir);
   let output_path = output_dir.map(Path::new);
 
+  // Check if the directory exists, if not, simply return Ok
+  if !input_path.exists() || !input_path.is_dir() {
+    return Ok(());
+  }
+
   let entries: Vec<PathBuf> = fs::read_dir(input_path)
     .map_err(|e| Error::from_reason(e.to_string()))?
     .filter_map(|entry| entry.ok())
@@ -110,7 +115,9 @@ fn process_directory_internal(
 /// Determines if an image format is supported.
 fn is_supported(path: &Path) -> bool {
   matches!(
-    path.extension().and_then(|ext| ext.to_str()),
-    Some("jpg" | "jpeg" | "png" | "bmp" | "tiff")
+    path.extension()
+        .and_then(|ext| ext.to_str())
+        .map(|ext| ext.to_lowercase()),
+    Some(ref ext) if ["jpg", "jpeg", "png", "bmp", "tiff"].contains(&ext.as_str())
   )
 }
