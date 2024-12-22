@@ -1,4 +1,5 @@
-use image::{DynamicImage, ImageReader};
+use image::{DynamicImage, ImageReader, ImageFormat};
+use std::io::Cursor;
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
 use rayon::prelude::*;
@@ -8,11 +9,11 @@ use std::{
 };
 use webp::Encoder;
 
-/// Encodes a `DynamicImage` to WebP format.
-fn encode_webp(image: &DynamicImage) -> Result<Vec<u8>> {
+/// Encodes a `DynamicImage` to WebP format with a specified quality.
+fn encode_webp(image: &DynamicImage, quality: f32) -> Result<Vec<u8>> {
   let encoded = Encoder::from_image(image)
     .map_err(|e| Error::from_reason(e.to_string()))?
-    .encode(100.0)
+    .encode(quality)
     .to_vec();
   Ok(encoded)
 }
@@ -22,6 +23,7 @@ fn convert_image(
   input_path: &Path,
   output_dir: Option<&Path>,
   keep_original_ext: bool,
+  quality: f32,
 ) -> Result<()> {
   let output_path = if keep_original_ext {
     // Keep the original file name and extension
@@ -44,7 +46,7 @@ fn convert_image(
   let image = image_reader
     .decode()
     .map_err(|e| Error::from_reason(e.to_string()))?;
-  let image_data = encode_webp(&image)?;
+  let image_data = encode_webp(&image, quality)?;
 
   // If we're overwriting the original file, we should write to a temporary file first
   if output_path == input_path {
@@ -61,8 +63,8 @@ fn convert_image(
 
 /// Processes all images in a directory recursively, converting them to WebP format.
 #[napi]
-pub fn process_directory(input_dir: String, output_dir: Option<String>) -> Result<()> {
-  process_directory_internal(&input_dir, output_dir.as_deref(), false)
+pub fn process_directory(input_dir: String, output_dir: Option<String>, quality: Option<u8>) -> Result<()> {
+  process_directory_internal(&input_dir, output_dir.as_deref(), false, quality.unwrap_or(100) as f32)
 }
 
 /// Processes all images in a directory recursively, converting them to WebP format and optionally keeping original file names.
@@ -70,8 +72,9 @@ pub fn process_directory(input_dir: String, output_dir: Option<String>) -> Resul
 pub fn process_directory_destructive(
   input_dir: String,
   keep_original_names: Option<bool>,
+  quality: Option<u8>,
 ) -> Result<()> {
-  process_directory_internal(&input_dir, None, keep_original_names.unwrap_or(false))
+  process_directory_internal(&input_dir, None, keep_original_names.unwrap_or(false), quality.unwrap_or(100) as f32)
 }
 
 /// Internal function to handle both destructive and non-destructive processing
@@ -79,6 +82,7 @@ fn process_directory_internal(
   input_dir: &str,
   output_dir: Option<&str>,
   keep_original_ext: bool,
+  quality: f32,
 ) -> Result<()> {
   let input_path = Path::new(input_dir);
   let output_path = output_dir.map(Path::new);
@@ -97,7 +101,7 @@ fn process_directory_internal(
   entries.par_iter().try_for_each(|entry| {
     if entry.is_file() {
       if is_supported(entry) {
-        convert_image(entry, output_path, keep_original_ext)?;
+        convert_image(entry, output_path, keep_original_ext, quality)?;
       } else {
         //println!("Skipping unsupported file: {}", entry.display());
       }
@@ -106,6 +110,7 @@ fn process_directory_internal(
         &entry.to_string_lossy(),
         output_path.map(|p| p.to_str().unwrap()),
         keep_original_ext,
+        quality,
       )?;
     }
     Ok(())
@@ -114,10 +119,69 @@ fn process_directory_internal(
 
 /// Determines if an image format is supported.
 fn is_supported(path: &Path) -> bool {
-  matches!(
-    path.extension()
-        .and_then(|ext| ext.to_str())
-        .map(|ext| ext.to_lowercase()),
-    Some(ref ext) if ["jpg", "jpeg", "png", "bmp", "tiff"].contains(&ext.as_str())
-  )
+  path.extension()
+      .and_then(|ext| ext.to_str())
+      .map(|ext| is_supported_extension(ext))
+      .unwrap_or(false)
+}
+
+/// Checks if the given extension is supported.
+fn is_supported_extension(ext: &str) -> bool {
+  matches!(ext.to_lowercase().as_str(), "jpg" | "jpeg" | "png" | "bmp" | "tiff")
+}
+
+/// Options for converting images to WebP format.
+#[derive(Debug, Clone, Copy)]
+pub struct WebpOptions {
+    pub quality: Option<u8>, // Quality of the WebP image (0-100)
+    pub dimensions: Option<(u32, u32)>, // Desired dimensions (width, height)
+    pub maintain_aspect_ratio: Option<bool>, // Whether to maintain the aspect ratio
+}
+
+impl FromNapiValue for WebpOptions {
+    unsafe fn from_napi_value(env: napi::sys::napi_env, napi_val: napi::sys::napi_value) -> Result<Self> {
+        let obj = Object::from_napi_value(env, napi_val)?;
+        Ok(WebpOptions {
+            quality: obj.get("quality")?,
+            dimensions: obj.get("dimensions")?,
+            maintain_aspect_ratio: obj.get("maintain_aspect_ratio").unwrap_or(Some(false)),
+        })
+    }
+}
+
+/// Converts a buffer containing image data to WebP format with options.
+#[napi]
+pub fn convert_to_webp(buffer: Buffer, extension: String, options: WebpOptions) -> Result<Buffer> {
+    // Determine the image format from the extension
+    let format = match extension.to_lowercase().as_str() {
+        "jpg" | "jpeg" => ImageFormat::Jpeg,
+        "png" => ImageFormat::Png,
+        "bmp" => ImageFormat::Bmp,
+        "tiff" => ImageFormat::Tiff,
+        _ => return Err(Error::from_reason("Unsupported image format")),
+    };
+
+    // Create an image reader from the buffer
+    let image_reader = ImageReader::with_format(Cursor::new(buffer), format);
+
+    // Decode the image
+    let mut image = image_reader
+        .decode()
+        .map_err(|e| Error::from_reason(e.to_string()))?;
+
+    // Resize the image if dimensions are provided
+    if let Some((width, height)) = options.dimensions {
+        if options.maintain_aspect_ratio.unwrap_or(false) {
+            image = image.resize_to_fill(width, height, image::imageops::FilterType::Lanczos3);
+        } else {
+            image = image.resize_exact(width, height, image::imageops::FilterType::Lanczos3);
+        }
+    }
+
+    // Encode the image to WebP format with the specified quality
+    let quality = options.quality.unwrap_or(100) as f32;
+    let webp_data = encode_webp(&image, quality)?;
+
+    // Return the WebP data as a Buffer
+    Ok(Buffer::from(webp_data))
 }

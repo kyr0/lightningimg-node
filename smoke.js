@@ -1,7 +1,8 @@
-import { processDirectoryDestructive, processDirectory } from './index.js'
+import { processDirectoryDestructive, processDirectory, convertToWebp } from './index.js'
 import { rmSync } from 'node:fs'
 import { copyFileSync, mkdirSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
+import { readFileSync, writeFileSync } from 'node:fs';
 
 function copyFiles(src, dest) {
   mkdirSync(dest, { recursive: true })
@@ -52,3 +53,33 @@ console.time('Testing destructive processing with non-existing folder...')
 // (this is only useful when working with bundlers for static site generators like Gatsby, Next.js, Astro, etc.)
 processDirectoryDestructive('./test_images_non_existing', /* keep original file names */ true)
 console.timeEnd('Testing destructive processing with non-existing folder...')
+
+// read the image file into a buffer
+const imageBuffer = readFileSync('test_data/defuss_logo_jpg.JPEG');
+
+// convert the image buffer to WebP format
+const webpBuffer = convertToWebp(imageBuffer, 'jpeg', {
+  quality: 80, // example quality
+  dimensions: [400, 300], // no resizing
+  maintain_aspect_ratio: false // no aspect ratio maintenance
+})
+
+console.log('Conversion successful, WebP buffer size:', webpBuffer.length);
+
+// write the webpBuffer to a file named 'liveconvert.webp' in the 'test_output' directory
+writeFileSync('test_output/liveconvert.webp', webpBuffer);
+console.log('WebP file written successfully to test_output/liveconvert.webp');
+
+
+// convert the image buffer to WebP format
+const webpBufferAR = convertToWebp(imageBuffer, 'jpeg', {
+  quality: 100, // example quality
+  dimensions: [400, 300], // no resizing
+  maintain_aspect_ratio: true // no aspect ratio maintenance
+})
+
+console.log('Conversion successful with aspect ratio, 100%, WebP buffer size:', webpBufferAR.length);
+
+// write the webpBuffer to a file named 'liveconvert.webp' in the 'test_output' directory
+writeFileSync('test_output/liveconvert_100_ar.webp', webpBufferAR);
+console.log('WebP file written successfully to test_output/liveconvert_100_ar.webp');

@@ -1,6 +1,6 @@
 # lightningimg-node
 
-> The times when image conversion on Node.js were a pain are over.
+> The times when image conversion using Node.js was a pain are over.
 
 ## Install
 

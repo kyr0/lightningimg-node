@@ -310,7 +310,8 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { processDirectory, processDirectoryDestructive } = nativeBinding
+const { processDirectory, processDirectoryDestructive, convertToWebp } = nativeBinding
 
 module.exports.processDirectory = processDirectory
 module.exports.processDirectoryDestructive = processDirectoryDestructive
+module.exports.convertToWebp = convertToWebp
