@@ -1,8 +1,8 @@
 import { Bench } from 'tinybench'
-import { processDirectoryDestructive, processDirectory } from '../index.js'
+import { processDirectoryDestructive, processDirectory, convertToWebp } from '../index.js'
 import { copyFile, mkdir, readdir } from 'node:fs/promises'
 import { join } from 'node:path'
-import { existsSync, mkdirSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { rmSync } from 'node:fs'
 
 async function copyFiles(src: string, dest: string): Promise<void> {
@@ -45,6 +45,35 @@ b.add('Transparently convert files in directory A (destructive)', async () => {
   // (this is only useful when working with bundlers for static site generators like Gatsby, Next.js, Astro, etc.)
   processDirectoryDestructive('./test_images', /* keep original file names */ true)
 })
+
+// read the image file into a buffer
+const imageBuffer = readFileSync('test_data/defuss_logo_jpg.JPEG');
+
+b.add('Runtime convert single image as Buffer, with aspect-ratio, with scaling', async () => {
+  // convert the image buffer to WebP format
+  convertToWebp(imageBuffer, 'jpeg', {
+    quality: 100, // example quality
+    dimensions: [400, 300], // no resizing
+    maintain_aspect_ratio: false // no aspect ratio maintenance
+  })
+});
+
+b.add('Runtime convert single image as Buffer, no aspect-ratio, with scaling', async () => {
+  // convert the image buffer to WebP format
+  convertToWebp(imageBuffer, 'jpeg', {
+    quality: 100, // example quality
+    dimensions: [400, 300], // no resizing
+    maintain_aspect_ratio: false // no aspect ratio maintenance
+  })
+});
+
+
+b.add('Runtime convert single image as Buffer, no aspect-ratio, no scaling', async () => {
+  // convert the image buffer to WebP format
+  convertToWebp(imageBuffer, 'jpeg', {
+    quality: 100, // example quality
+  })
+});
 
 console.info('Running benchmarks...')
 
