@@ -1,6 +1,6 @@
 {
   "name": "lightningimg-node",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A transparent and safe image converter for Node.js, written in Rust. Encodes PNG, JPG/JPEG, TIFF to WebP",
   "main": "index.js",
   "repository": "https://github.com/kyr0/lightningimg-node",
