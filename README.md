@@ -12,7 +12,7 @@ It's super simple! Take a look at the [`./example`](./example/index.js) folder.
 Please keep in mind to install `lightningimg-node` as a dependency in your project (see [`./example/package.json`](./example/package.json)).
 
 ```js
-import { processDirectoryDestructive, processDirectory } from 'lightningimg-node'
+import { processDirectoryDestructive, processDirectory, convertToWebp } from 'lightningimg-node'
 
 // Process all images in the test_images directory and save the output in the test_output directory
 processDirectory('./test_images', './test_output')
@@ -20,6 +20,21 @@ processDirectory('./test_images', './test_output')
 // Overwrite the original images with the processed images, keeping the original image's file extensions
 // (this is only useful when working with bundlers for static site generators like Gatsby, Next.js, Astro, etc.)
 processDirectoryDestructive('./test_images', /* keep original file names */ true)
+
+// convert an image in realtime
+
+// read the image file into a buffer
+const imageBuffer = readFileSync('test_data/defuss_logo_jpg.JPEG');
+
+// convert the image buffer to WebP format
+const webpBuffer = convertToWebp(imageBuffer, 'jpeg', {
+  quality: 80, // example quality
+  dimensions: [400, 300], // resize to specific dimensions
+  maintain_aspect_ratio: false // no aspect ratio maintenance, set it to true to zoom in and center
+})
+
+// write the webpBuffer to a file named 'liveconvert.webp' in the 'test_output' directory
+writeFileSync('test_output/liveconvert.webp', webpBuffer);
 ```
 
 ## Support matrix
@@ -116,8 +131,9 @@ $ ava --verbose
 ### Release the package
 
 ```
-yarn run version -p patch
-
+yarn version 0.3.3 # just an example, change version!
+git add .
+git commit -m "0.3.3"
 git push
 ```
 
