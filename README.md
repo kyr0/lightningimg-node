@@ -21,7 +21,7 @@ processDirectory('./test_images', './test_output')
 // (this is only useful when working with bundlers for static site generators like Gatsby, Next.js, Astro, etc.)
 processDirectoryDestructive('./test_images', /* keep original file names */ true)
 
-// convert an image in realtime
+// --- convert an image at runtime
 
 // read the image file into a buffer
 const imageBuffer = readFileSync('test_data/defuss_logo_jpg.JPEG');
